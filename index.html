@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071a2a">
+  <meta name="description" content="A fan-made simple tracker for shiny hunting in Pokémon Legends: Z-A.">
+  <title>Shiny Hunt Tracker | Pokémon Legends: Z-A</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/dex.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a href="#main" class="brand" aria-label="ShinyQuest homepage">
+        <span class="brand-mark" aria-hidden="true"><span>Z</span><i></i><span>A</span></span>
+        <span class="brand-copy"><strong>SHINY<span>QUEST</span></strong><small>LUMIOSE || FIELD TRACKER</small></span>
+        <span class="brand-label">Z-A</span>
+      </a>
+      <nav class="tabs" aria-label="Main navigation">
+        <button type="button" class="tab active" data-view="dashboard" aria-current="page">Dashboard</button>
+        <button type="button" class="tab" data-view="hunts">My Hunts</button>
+        <button type="button" class="tab" data-view="collection">Collection</button>
+        <button type="button" class="tab" data-view="pokedex">Z-A Pokédex</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="signal-dot" aria-hidden="true"></span> POKÉMON LEGENDS: Z-A <span class="hero-separator">/</span> SHINY FIELD RESEARCH</p>
+        <h1 id="page-title">Every shiny.<br><span class="hero-title-accent">Every discovery.</span></h1>
+        <p class="intro">Your Lumiose City shiny tracker. Record your catches and discoveries.</p>
+        <div class="hero-chips" role="group" aria-label="Tracker features"><span>01 / TRACK HUNTS</span><span>02 / ANALYSE ODDS</span><span>03 / COMPLETE THE DEX</span></div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-coordinate">LUMIOSE CITY <span></span> 00.01</div>
+        <!-- Three-star shiny symbol drawn with basic SVG paths. -->
+        <svg class="shiny-art" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+          <path d="M96 16 L117 55 L156 76 L117 97 L96 137 L75 97 L36 76 L75 55 Z" fill="#74D9E6"/>
+          <path d="M180 116 L194 142 L220 156 L194 170 L180 196 L166 170 L140 156 L166 142 Z" fill="#74D9E6"/>
+          <path d="M96 201 L104 214 L117 221 L104 228 L96 241 L88 228 L75 221 L88 214 Z" fill="#C5F56A"/>
+        </svg>
+        <div class="hero-visual-label"><strong>ZA-001</strong><span>LUMIOSE FIELD LOG</span></div>
+      </div>
+    </section>
+
+    <section class="preference-strip" aria-labelledby="preference-title">
+      <div class="preference-copy"><p class="eyebrow">YOUR PERMANENT UNLOCK</p><h2 id="preference-title">Shiny Charm</h2><p class="muted">Unlock it once. Future eligible wild hunts will automatically use lowered odds.</p></div>
+      <label class="charm-toggle" for="global-charm"><input id="global-charm" type="checkbox"><span>Shiny Charm Owned</span></label>
+      <p class="charm-status" id="charm-state">Not unlocked</p>
+    </section>
+    <div class="status-line" id="status" role="status" aria-live="polite"></div>
+
+    <section id="view-dashboard" class="view" aria-label="Overview">
+      <div class="stat-grid" id="overview-stats"></div>
+      <section class="panel latest-panel" aria-labelledby="latest-title">
+        <div class="panel-heading"><div><p class="eyebrow">LATEST SHINY</p><h2 id="latest-title">Most recent shiny caught</h2></div><button class="outline small" type="button" data-view="collection">My collection</button></div>
+        <div id="latest-shiny" aria-live="polite"></div>
+      </section>
+      <div class="two-columns leaderboard-columns">
+        <section class="panel" aria-labelledby="lucky-title">
+          <div class="panel-heading"><div><p class="eyebrow">BEST LUCK</p><h2 id="lucky-title">Top 5 under odds</h2></div><span aria-hidden="true">✦</span></div>
+          <!-- Star reference: https://www.keynotesupport.com/internet/special-characters-stars.shtml -->
+          <div id="lowest-rates" class="leaderboard"></div>
+        </section>
+        <section class="panel" aria-labelledby="unlucky-title">
+          <div class="panel-heading"><div><p class="eyebrow">WORST LUCK</p><h2 id="unlucky-title">Top 5 over odds</h2></div><span aria-hidden="true">⏱</span></div>
+          <!-- Clock symbol reference: https://stackoverflow.com/questions/5437674/what-unicode-characters-represent-time -->
+          <div id="highest-rates" class="leaderboard"></div>
+        </section>
+      </div>
+      <p class="odds-explainer">These leaderboards compare checks used to the <strong>expected average checks</strong> for each hunt's odds. 50% under = half the expected checks; 100% over = twice the expected checks. Odds are an average, not a guarantee.</p>
+      <div class="two-columns">
+        <section class="panel" aria-labelledby="start-title">
+          <div class="panel-heading"><div><p class="eyebrow">BEGIN A HUNT</p><h2 id="start-title">Find your target</h2></div><span aria-hidden="true">⌕</span></div>
+          <!-- Search-symbol reference: https://stackoverflow.com/questions/12036038/is-there-unicode-glyph-symbol-to-represent-search -->
+          <form id="search-form" class="search-form">
+            <label for="pokemon-search">Pokémon name or National Pokédex number</label>
+            <div class="search-inline"><input id="pokemon-search" type="text" required minlength="1" maxlength="55" placeholder="e.g. Ralts, Mareep, 25" autocomplete="off"><button type="submit" id="search-button">Search</button></div>
+          </form>
+          <p class="hint">Z-A starter picks: <button class="text-button" data-pick="ralts" type="button">Ralts</button> * <button class="text-button" data-pick="mareep" type="button">Mareep</button> * <button class="text-button" data-pick="chikorita" type="button">Chikorita</button> * <button class="text-button" data-pick="gastly" type="button">Gastly</button></p>
+          <div id="pokemon-result" class="pokemon-result" aria-live="polite"><p class="muted">Search to view a Pokemon's sprites and create a hunt.</p></div>
+        </section>
+
+        <section class="panel" aria-labelledby="info-title">
+          <div class="panel-heading"><div><p class="eyebrow">LEGENDS: Z-A</p><h2 id="info-title">Hunting reference</h2></div><span aria-hidden="true">✧</span></div>
+          <!-- Hollow-star reference: https://www.keynotesupport.com/internet/special-characters-stars.shtml -->
+          <div class="odds-grid"><div class="odds-tile"><span>Base wild odds</span><strong>1 / 4,096</strong></div><div class="odds-tile"><span>With Shiny Charm</span><strong>≈ 1 / 1,024</strong></div></div>
+          <p class="muted">The Shiny Charm adds three extra shiny rolls for eligible wild spawns. Each new Pokemon spawn is a separate check. Enter the number of eligible spawns you've checked, not just the number of resets.</p>
+          <p class="hint">A 50% cumulative chance does not guarantee a shiny. Odds do not improve just because you've been unlucky.</p>
+          <p class="hint">The Pokédex covers base-game Lumiose species. Mega Dimension DLC exclusives and Sparkling Power methods are not included yet. Fossil restoration uses base odds even with the Shiny Charm.</p>
+          <p class="source-line">Rules reference: <a href="https://www.serebii.net/legendsz-a/shinypokemon.shtml" target="_blank" rel="noopener noreferrer">Serebii Z-A shiny guide</a>.</p>
+        </section>
+      </div>
+      <section class="panel" aria-labelledby="recent-title"><div class="panel-heading"><h2 id="recent-title">Recent Hunts</h2><button class="outline small" type="button" data-view="hunts">View All</button></div><div id="recent-hunts"></div></section>
+    </section>
+
+    <section id="view-hunts" class="view" aria-label="My hunts" hidden>
+      <div class="section-top"><div><p class="eyebrow">TRACK YOUR PROGRESS</p><h2>My Hunts</h2></div><button type="button" class="outline" data-view="dashboard">+ New Hunt</button></div>
+      <p class="muted">The counters represent individual target Pokemon checked. They are manual estimates, not live game data.</p>
+      <div id="hunts-list" class="card-list"></div>
+    </section>
+
+    <section id="view-collection" class="view" aria-label="Shiny collection" hidden>
+      <div class="section-top"><div><p class="eyebrow">YOUR LUMIOSE FINDS</p><h2>Shiny Collection</h2></div><span class="pill" id="collection-total">0 collected</span></div>
+      <p class="muted">Completed hunts become collection entries. Duplicate shinies count as separate catches.</p>
+      <div class="panel collection-toolbar">
+        <div><label for="collection-search">Search your collection</label><input type="search" id="collection-search" placeholder="Search species, nickname or location" maxlength="100"></div>
+        <div><label for="collection-sort">Sort by</label><select id="collection-sort"><option value="newest">Newest catches</option><option value="oldest">Oldest catches</option><option value="az">Species A-Z</option><option value="most">Most checks</option><option value="fewest">Fewest checks</option></select></div>
+        <button type="button" class="outline" id="add-collection">+ Add a shiny</button>
+      </div>
+      <p class="hint" id="collection-count"></p>
+      <div id="collection-grid" class="collection-grid"></div>
+    </section>
+
+    <section id="view-pokedex" class="view" aria-label="Legends Z-A Pokédex" hidden>
+      <div class="section-top"><div><p class="eyebrow">LUMIOSE CITY · BASE GAME</p><h2>Shiny Pokédex</h2></div><span class="pill" id="dex-total">0 / 227 collected</span></div>
+      <p class="muted">Browse the full base-game Lumiose Pokédex in regional order. Only shiny-obtainable species count towards completion. Legendary and special-event shiny-locked entries can be shown separately.</p>
+      <div class="panel dex-toolbar">
+        <div class="dex-progress-header"><strong id="dex-progress-label">0 of 227 shiny species collected</strong><span id="dex-progress-percent">0%</span></div>
+        <div class="meter dex-meter" role="progressbar" aria-label="Shiny Pokédex completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="dex-meter"><span id="dex-meter-fill" style="width:0%"></span></div>
+        <div class="dex-controls">
+          <div><label for="dex-search">Search Pokémon</label><input id="dex-search" type="search" maxlength="65" placeholder="Name or regional # (e.g. Ralts, 87)"></div>
+          <div><label for="dex-filter">Show</label><select id="dex-filter"><option value="available">All Shiny-Obtainable</option><option value="missing">Not collected</option><option value="collected">Collected</option><option value="all">Full regional Pokédex</option><option value="locked">Shiny-locked only</option></select></div>
+        </div>
+        <p class="muted dex-result-count" id="dex-result-count"></p>
+      </div>
+      <div id="dex-grid" class="dex-grid"></div>
+      <p class="hint">Sprites are from PokéAPI's sprite project. Some alternative forms have separate shinies not yet tracked individually. Gift or scripted encounters may be shiny-locked even when the same species can be hunted in the wild.</p>
+    </section>
+
+    <dialog id="dex-dialog" class="dex-dialog" aria-label="Pokémon details">
+      <div id="dex-result" class="dex-result" aria-live="polite"></div>
+    </dialog>
+
+    <dialog id="record-dialog" class="record-dialog" aria-labelledby="record-title">
+      <form id="record-form" class="dialog-content">
+        <h2 id="record-title">Add a shiny to your collection</h2>
+        <p class="muted" id="record-target">Record a catch from Pokémon Legends: Z-A.</p>
+        <div class="form-row"><div><label for="record-date">Date caught</label><input id="record-date" type="date" required></div><div><label for="record-checks">Individual checks (optional)</label><input id="record-checks" type="number" min="1" max="1000000000" step="1" placeholder="Unknown"></div></div>
+        <label for="record-nickname">Nickname (optional)</label><input id="record-nickname" type="text" maxlength="45">
+        <label for="record-location">Where did you catch it? (optional)</label><input id="record-location" type="text" maxlength="100" placeholder="e.g. Wild Zone 7">
+        <label for="record-method">Hunting method</label><select id="record-method"><option value="wild">Wild encounters</option><option value="fossil">Fossil restoration</option></select>
+        <label class="check-label" for="record-charm"><input id="record-charm" type="checkbox"> Shiny Charm was active for this catch</label>
+        <p class="hint">For past catches, the charm setting can be corrected independently of your current global preference. Leave checks blank if unknown.</p>
+        <div class="dialog-buttons"><button type="button" class="outline" id="cancel-record">Cancel</button><button type="submit">Save collection entry</button></div>
+      </form>
+    </dialog>
+
+    <section class="panel data-panel" aria-labelledby="data-title">
+      <div><h2 id="data-title">Your data</h2><p class="muted">Saved only in this browser. Export a backup if you might change device or clear browser storage.</p></div>
+      <div class="data-buttons"><button id="export-btn" class="outline" type="button">Export JSON</button><label class="file-label" for="import-file">Import JSON</label><input type="file" id="import-file" accept=".json,application/json"><button type="button" class="danger-outline" id="clear-btn">Clear saved data</button></div>
+    </section>
+  </main>
+
+  <dialog id="complete-dialog" aria-labelledby="complete-title">
+    <form id="complete-form" class="dialog-content">
+      <h2 id="complete-title">Shiny found! ✦</h2>
+      <p class="muted" id="complete-target">Save your shiny to the collection.</p>
+      <label for="caught-name">Nickname (optional)</label><input type="text" id="caught-name" maxlength="45" placeholder="Your shiny's nickname">
+      <label for="caught-location">Where did you find it? (optional)</label><input type="text" id="caught-location" maxlength="100" placeholder="Wild Zone, city area, etc.">
+      <div class="dialog-buttons"><button type="button" class="outline" id="cancel-complete">Cancel</button><button type="submit">Save shiny</button></div>
+    </form>
+  </dialog>
+
+  <footer class="shell footer">Unofficial fan-made tracker · Pokémon data and sprites from <a href="https://pokeapi.co/" target="_blank" rel="noopener noreferrer">PokéAPI</a> · Not affiliated with Nintendo, Game Freak or The Pokémon Company.</footer>
+</body>
+</html>
