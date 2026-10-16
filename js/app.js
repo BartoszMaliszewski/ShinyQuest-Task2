@@ -2,8 +2,8 @@
 
 const STORAGE_KEY = "shinyquest-za";
 const SETTINGS_KEY = "shinyquest-za-settings";
-const SPECIES_API = "https://pokeapi.co/api/pokemon-species/";
-const POKEMON_API = "https://pokeapi.co/api/pokemon/";
+const SPECIES_API = "https://pokeapi.co/api/v2/pokemon-species/";
+const POKEMON_API = "https://pokeapi.co/api/v2/pokemon/";
 const BASE_SHINY_ROLL = 1 / 4096;
 const $ = (selector) => document.querySelector(selector);
 const safe = (input) => String(input ?? "").replace(/[&<>"']/g, (char) => ({
